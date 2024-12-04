@@ -1,0 +1,1091 @@
+{
+  "version": "Notebook/1.0",
+  "items": [
+    {
+      "type": 12,
+      "content": {
+        "version": "NotebookGroup/1.0",
+        "groupType": "editable",
+        "items": [
+          {
+            "type": 1,
+            "content": {
+              "json": "## PLEX environment\r\n1. **PLEX**\r\n2. **SAXANA**\r\n3. **AGRUS**"
+            },
+            "name": "Test - header"
+          },
+          {
+            "type": 1,
+            "content": {
+              "json": "**Overall Applications and Applications Plan Availability**"
+            },
+            "name": "Overall Applications and Applications Plan Availabilit",
+            "styleSettings": {
+              "showBorder": true
+            }
+          },
+          {
+            "type": 9,
+            "content": {
+              "version": "KqlParameterItem/1.0",
+              "crossComponentResources": [
+                "{Subscription}"
+              ],
+              "parameters": [
+                {
+                  "id": "0ba0f6eb-f84e-497f-b429-2f1e2159692e",
+                  "version": "KqlParameterItem/1.0",
+                  "name": "Subscription",
+                  "type": 6,
+                  "isRequired": true,
+                  "multiSelect": true,
+                  "quote": "'",
+                  "delimiter": ",",
+                  "typeSettings": {
+                    "additionalResourceOptions": [
+                      "value::all"
+                    ],
+                    "includeAll": false
+                  },
+                  "timeContext": {
+                    "durationMs": 86400000
+                  },
+                  "value": [
+                    "value::all"
+                  ],
+                  "label": "Subscriptions"
+                },
+                {
+                  "id": "29a382f7-6437-4b30-b1ab-8dd0e6c12799",
+                  "version": "KqlParameterItem/1.0",
+                  "name": "ResourceGroups",
+                  "label": "Resource Groups",
+                  "type": 2,
+                  "isRequired": true,
+                  "multiSelect": true,
+                  "quote": "'",
+                  "delimiter": ",",
+                  "query": "Resources\r\n| summarize by resourceGroup\r\n| order by resourceGroup asc\r\n| project id=resourceGroup, resourceGroup",
+                  "crossComponentResources": [
+                    "{Subscription}"
+                  ],
+                  "typeSettings": {
+                    "additionalResourceOptions": [
+                      "value::all"
+                    ],
+                    "selectAllValue": "",
+                    "showDefault": false
+                  },
+                  "timeContext": {
+                    "durationMs": 86400000
+                  },
+                  "queryType": 1,
+                  "resourceType": "microsoft.resourcegraph/resources",
+                  "value": [
+                    "value::all"
+                  ]
+                }
+              ],
+              "style": "above",
+              "queryType": 1,
+              "resourceType": "microsoft.resourcegraph/resources"
+            },
+            "name": "parameters - 2"
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "Resources\r\n| where type == \"microsoft.web/sites\"\r\n| where resourceGroup in ({ResourceGroups})\r\n| extend state = tolower(properties.state)\r\n| extend status = case(\r\nstate == 'stopped',\r\n'Stopped',\r\nstate == 'running',\r\n'Running',\r\n'Other')\r\n| summarize count() by status\r\n",
+              "size": 3,
+              "title": "App Sevices",
+              "queryType": 1,
+              "resourceType": "microsoft.resourcegraph/resources",
+              "crossComponentResources": [
+                "{Subscription}"
+              ],
+              "visualization": "piechart",
+              "graphSettings": {
+                "type": 0
+              },
+              "chartSettings": {
+                "showMetrics": false,
+                "showLegend": true,
+                "seriesLabelSettings": [
+                  {
+                    "seriesName": "Running",
+                    "color": "green"
+                  },
+                  {
+                    "seriesName": "Stopped",
+                    "color": "redBright"
+                  },
+                  {
+                    "seriesName": "Other",
+                    "color": "orange"
+                  }
+                ]
+              }
+            },
+            "customWidth": "30",
+            "name": "WebApp Pie"
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "Resources\r\n| where type == \"microsoft.web/serverfarms\"\r\n| where resourceGroup in ({ResourceGroups})\r\n| extend state = tostring(properties.status)\r\n| summarize count() by state\r\n",
+              "size": 3,
+              "title": "App Service Plans",
+              "queryType": 1,
+              "resourceType": "microsoft.resourcegraph/resources",
+              "crossComponentResources": [
+                "{Subscription}"
+              ],
+              "visualization": "piechart",
+              "chartSettings": {
+                "showMetrics": false,
+                "showLegend": true,
+                "seriesLabelSettings": [
+                  {
+                    "seriesName": "Ready",
+                    "color": "blueDark"
+                  },
+                  {
+                    "seriesName": "Creating",
+                    "color": "blue"
+                  },
+                  {
+                    "seriesName": "Pending",
+                    "color": "yellow"
+                  }
+                ]
+              }
+            },
+            "customWidth": "30",
+            "name": "WebApp Plan Pie"
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "resources\r\n| where type == \"microsoft.web/sites\"\r\n| extend state = tolower(properties.state)\r\n| union (\r\nresources\r\n| where type == \"microsoft.operationalinsights/workspaces\"\r\n| extend state = tolower(properties.provisioningState))\r\n| union (\r\nresources\r\n| where type == \"microsoft.sql/managedinstances/databases\"\r\n| extend state = tolower(properties.status)) \r\n| union (\r\nresources\r\n| where type == \"microsoft.web/serverfarms\"\r\n| extend state = tolower(properties.status))\r\n| union (\r\nresources\r\n| mv-expand tags\r\n| extend ParentResource = parse_json(tags).ParentResource \r\n| where isnotempty(ParentResource)\r\n)\r\n//| project id, name, state, type, resourceGroup, ParentResource",
+              "size": 2,
+              "queryType": 1,
+              "resourceType": "microsoft.resourcegraph/resources",
+              "crossComponentResources": [
+                "{Subscription}"
+              ],
+              "visualization": "table",
+              "gridSettings": {
+                "formatters": [
+                  {
+                    "columnMatch": "tenantId",
+                    "formatter": 5
+                  }
+                ],
+                "hierarchySettings": {
+                  "idColumn": "name",
+                  "parentColumn": "ParentResource",
+                  "treeType": 0,
+                  "expanderColumn": "id"
+                }
+              }
+            },
+            "conditionalVisibility": {
+              "parameterName": "WebApps",
+              "comparison": "isEqualTo",
+              "value": "hidden"
+            },
+            "showPin": false,
+            "name": "webapp tree"
+          },
+          {
+            "type": 10,
+            "content": {
+              "chartId": "workbookdf867ba4-435f-4807-b91a-72c3923cb062",
+              "version": "MetricsItem/2.0",
+              "size": 4,
+              "chartType": 0,
+              "resourceType": "microsoft.keyvault/vaults",
+              "metricScope": 0,
+              "resourceIds": [
+                "/subscriptions/aa7bdf90-460d-4cc5-a986-537a5b8b2209/resourceGroups/z-aas-log-plex-dva-ew1-rgp01/providers/Microsoft.KeyVault/vaults/zaaslogplexdvaew1key02"
+              ],
+              "timeContext": {
+                "durationMs": 14400000
+              },
+              "metrics": [
+                {
+                  "namespace": "microsoft.keyvault/vaults",
+                  "metric": "microsoft.keyvault/vaults--Availability",
+                  "aggregation": 4
+                }
+              ],
+              "gridFormatType": 2,
+              "gridSettings": {
+                "formatters": [
+                  {
+                    "columnMatch": "Subscription",
+                    "formatter": 5
+                  },
+                  {
+                    "columnMatch": "Name",
+                    "formatter": 13,
+                    "formatOptions": {
+                      "linkTarget": "Resource"
+                    }
+                  },
+                  {
+                    "columnMatch": "microsoft.keyvault/vaults--Availability Timeline",
+                    "formatter": 5
+                  },
+                  {
+                    "columnMatch": "microsoft.keyvault/vaults--Availability",
+                    "formatter": 1,
+                    "numberFormat": {
+                      "unit": 1,
+                      "options": null
+                    }
+                  }
+                ],
+                "rowLimit": 10000,
+                "labelSettings": [
+                  {
+                    "columnId": "microsoft.keyvault/vaults--Availability",
+                    "label": "Overall Vault Availability (Average)"
+                  },
+                  {
+                    "columnId": "microsoft.keyvault/vaults--Availability Timeline",
+                    "label": "Overall Vault Availability (Average) Timeline"
+                  }
+                ]
+              }
+            },
+            "conditionalVisibility": {
+              "parameterName": "KeyVaults",
+              "comparison": "isEqualTo",
+              "value": "hidden"
+            },
+            "name": "KeyVaults"
+          },
+          {
+            "type": 10,
+            "content": {
+              "chartId": "workbookec7cd1f4-baf2-47a4-a6ed-05e44804f2c3",
+              "version": "MetricsItem/2.0",
+              "size": 4,
+              "chartType": 0,
+              "resourceType": "microsoft.storage/storageaccounts",
+              "metricScope": 0,
+              "resourceIds": [
+                "/subscriptions/aa7bdf90-460d-4cc5-a986-537a5b8b2209/resourceGroups/z-aas-plex-plex-dva-ew1-rgp01/providers/Microsoft.Storage/storageAccounts/zaasplexplexdvaew1sto01"
+              ],
+              "timeContext": {
+                "durationMs": 14400000
+              },
+              "metrics": [
+                {
+                  "namespace": "microsoft.storage/storageaccounts",
+                  "metric": "microsoft.storage/storageaccounts-Transaction-Availability",
+                  "aggregation": 4
+                }
+              ],
+              "gridFormatType": 2,
+              "gridSettings": {
+                "formatters": [
+                  {
+                    "columnMatch": "Subscription",
+                    "formatter": 5
+                  },
+                  {
+                    "columnMatch": "Name",
+                    "formatter": 13,
+                    "formatOptions": {
+                      "linkTarget": "Resource"
+                    }
+                  },
+                  {
+                    "columnMatch": "microsoft.storage/storageaccounts-Transaction-Availability Timeline",
+                    "formatter": 5
+                  },
+                  {
+                    "columnMatch": "microsoft.storage/storageaccounts-Transaction-Availability",
+                    "formatter": 1,
+                    "numberFormat": {
+                      "unit": 1,
+                      "options": null
+                    }
+                  }
+                ],
+                "rowLimit": 10000,
+                "labelSettings": [
+                  {
+                    "columnId": "microsoft.storage/storageaccounts-Transaction-Availability",
+                    "label": "Availability (Average)"
+                  },
+                  {
+                    "columnId": "microsoft.storage/storageaccounts-Transaction-Availability Timeline",
+                    "label": "Availability Timeline"
+                  }
+                ]
+              }
+            },
+            "conditionalVisibility": {
+              "parameterName": "Storages",
+              "comparison": "isEqualTo",
+              "value": "hidden"
+            },
+            "name": "Storages metrics"
+          },
+          {
+            "type": 1,
+            "content": {
+              "json": "**Application and Component Availability**"
+            },
+            "name": "Application and Component Availability",
+            "styleSettings": {
+              "showBorder": true
+            }
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "{\"version\":\"Merge/1.0\",\"merges\":[{\"id\":\"846582df-77fa-4133-8290-0005484e503c\",\"mergeType\":\"leftouter\",\"leftTable\":\"webapp tree\",\"rightTable\":\"KeyVaults\",\"leftColumn\":\"id\",\"rightColumn\":\"Name\"},{\"id\":\"76dfe187-c78b-43fb-8c8e-79e4ea52f0c7\",\"mergeType\":\"leftouter\",\"leftTable\":\"webapp tree\",\"rightTable\":\"Storages metrics\",\"leftColumn\":\"id\",\"rightColumn\":\"Name\"}],\"projectRename\":[{\"originalName\":\"[webapp tree].state\",\"mergedName\":\"state\",\"fromId\":\"846582df-77fa-4133-8290-0005484e503c\"},{\"originalName\":\"[webapp tree].status\",\"mergedName\":\"status\",\"fromId\":\"unknown\"},{\"originalName\":\"[Storages metrics].microsoft.storage/storageaccounts-Transaction-Availability\",\"mergedName\":\"Availability (Average)\",\"fromId\":\"76dfe187-c78b-43fb-8c8e-79e4ea52f0c7\"},{\"originalName\":\"[Storages metrics].Subscription\",\"mergedName\":\"Subscription1\",\"fromId\":\"76dfe187-c78b-43fb-8c8e-79e4ea52f0c7\"},{\"originalName\":\"[Storages metrics].Name\",\"mergedName\":\"Name1\",\"fromId\":\"76dfe187-c78b-43fb-8c8e-79e4ea52f0c7\"},{\"originalName\":\"[Storages metrics].Segment\",\"mergedName\":\"Segment1\",\"fromId\":\"76dfe187-c78b-43fb-8c8e-79e4ea52f0c7\"},{\"originalName\":\"[Storages metrics].microsoft.storage/storageaccounts-Transaction-Availability Timeline\",\"mergedName\":\"Availability Timeline\",\"fromId\":\"76dfe187-c78b-43fb-8c8e-79e4ea52f0c7\"},{\"originalName\":\"[webapp tree].id\",\"mergedName\":\"id\",\"fromId\":\"846582df-77fa-4133-8290-0005484e503c\"},{\"originalName\":\"[webapp tree].name\",\"mergedName\":\"name\",\"fromId\":\"846582df-77fa-4133-8290-0005484e503c\"},{\"originalName\":\"[webapp tree].type\",\"mergedName\":\"type\",\"fromId\":\"846582df-77fa-4133-8290-0005484e503c\"},{\"originalName\":\"[webapp tree].tenantId\",\"mergedName\":\"tenantId\",\"fromId\":\"846582df-77fa-4133-8290-0005484e503c\"},{\"originalName\":\"[webapp tree].kind\",\"mergedName\":\"kind\",\"fromId\":\"846582df-77fa-4133-8290-0005484e503c\"},{\"originalName\":\"[webapp tree].location\",\"mergedName\":\"location\",\"fromId\":\"846582df-77fa-4133-8290-0005484e503c\"},{\"originalName\":\"[webapp tree].resourceGroup\",\"mergedName\":\"resourceGroup\",\"fromId\":\"846582df-77fa-4133-8290-0005484e503c\"},{\"originalName\":\"[webapp tree].subscriptionId\",\"mergedName\":\"subscriptionId\",\"fromId\":\"846582df-77fa-4133-8290-0005484e503c\"},{\"originalName\":\"[webapp tree].managedBy\",\"mergedName\":\"managedBy\",\"fromId\":\"846582df-77fa-4133-8290-0005484e503c\"},{\"originalName\":\"[webapp tree].sku\",\"mergedName\":\"sku\",\"fromId\":\"846582df-77fa-4133-8290-0005484e503c\"},{\"originalName\":\"[webapp tree].plan\",\"mergedName\":\"plan\",\"fromId\":\"846582df-77fa-4133-8290-0005484e503c\"},{\"originalName\":\"[webapp tree].properties\",\"mergedName\":\"properties\",\"fromId\":\"846582df-77fa-4133-8290-0005484e503c\"},{\"originalName\":\"[webapp tree].tags\",\"mergedName\":\"tags\",\"fromId\":\"846582df-77fa-4133-8290-0005484e503c\"},{\"originalName\":\"[webapp tree].identity\",\"mergedName\":\"identity\",\"fromId\":\"846582df-77fa-4133-8290-0005484e503c\"},{\"originalName\":\"[webapp tree].zones\",\"mergedName\":\"zones\",\"fromId\":\"846582df-77fa-4133-8290-0005484e503c\"},{\"originalName\":\"[webapp tree].extendedLocation\",\"mergedName\":\"extendedLocation\",\"fromId\":\"846582df-77fa-4133-8290-0005484e503c\"},{\"originalName\":\"[webapp tree].ParentResource\",\"mergedName\":\"ParentResource\",\"fromId\":\"846582df-77fa-4133-8290-0005484e503c\"},{\"originalName\":\"[KeyVaults].Subscription\",\"mergedName\":\"Subscription\",\"fromId\":\"846582df-77fa-4133-8290-0005484e503c\"},{\"originalName\":\"[KeyVaults].Name\",\"mergedName\":\"Name\",\"fromId\":\"846582df-77fa-4133-8290-0005484e503c\"},{\"originalName\":\"[KeyVaults].Segment\",\"mergedName\":\"Segment\",\"fromId\":\"846582df-77fa-4133-8290-0005484e503c\"},{\"originalName\":\"[KeyVaults].microsoft.keyvault/vaults--Availability\",\"mergedName\":\"Overall Vault Availability (Average)\",\"fromId\":\"846582df-77fa-4133-8290-0005484e503c\"},{\"originalName\":\"[KeyVaults].microsoft.keyvault/vaults--Availability Timeline\",\"mergedName\":\"Overall Vault Availability (Average) Timeline\",\"fromId\":\"846582df-77fa-4133-8290-0005484e503c\"}]}",
+              "size": 3,
+              "queryType": 7,
+              "gridSettings": {
+                "formatters": [
+                  {
+                    "columnMatch": "state",
+                    "formatter": 8,
+                    "formatOptions": {
+                      "palette": "green"
+                    }
+                  },
+                  {
+                    "columnMatch": "Overall Vault Availability (Average)",
+                    "formatter": 8,
+                    "formatOptions": {
+                      "palette": "green"
+                    }
+                  },
+                  {
+                    "columnMatch": "Availability (Average)",
+                    "formatter": 8,
+                    "formatOptions": {
+                      "palette": "green"
+                    }
+                  },
+                  {
+                    "columnMatch": "id",
+                    "formatter": 0,
+                    "formatOptions": {
+                      "customColumnWidthSetting": "50ch"
+                    }
+                  },
+                  {
+                    "columnMatch": "name",
+                    "formatter": 5
+                  },
+                  {
+                    "columnMatch": "ParentResource",
+                    "formatter": 5
+                  },
+                  {
+                    "columnMatch": "Subscription",
+                    "formatter": 5
+                  },
+                  {
+                    "columnMatch": "Name",
+                    "formatter": 5
+                  },
+                  {
+                    "columnMatch": "Segment",
+                    "formatter": 5
+                  },
+                  {
+                    "columnMatch": "Overall Vault Availability (Average) Timeline",
+                    "formatter": 5
+                  },
+                  {
+                    "columnMatch": "Availability Timeline",
+                    "formatter": 5
+                  },
+                  {
+                    "columnMatch": "tenantId",
+                    "formatter": 5
+                  },
+                  {
+                    "columnMatch": "kind",
+                    "formatter": 5
+                  },
+                  {
+                    "columnMatch": "location",
+                    "formatter": 5
+                  },
+                  {
+                    "columnMatch": "subscriptionId",
+                    "formatter": 5
+                  },
+                  {
+                    "columnMatch": "managedBy",
+                    "formatter": 5
+                  },
+                  {
+                    "columnMatch": "sku",
+                    "formatter": 5
+                  },
+                  {
+                    "columnMatch": "plan",
+                    "formatter": 5
+                  },
+                  {
+                    "columnMatch": "properties",
+                    "formatter": 5
+                  },
+                  {
+                    "columnMatch": "tags",
+                    "formatter": 5
+                  },
+                  {
+                    "columnMatch": "identity",
+                    "formatter": 5
+                  },
+                  {
+                    "columnMatch": "zones",
+                    "formatter": 5
+                  },
+                  {
+                    "columnMatch": "extendedLocation",
+                    "formatter": 5
+                  },
+                  {
+                    "columnMatch": "Status",
+                    "formatter": 5
+                  }
+                ],
+                "hierarchySettings": {
+                  "idColumn": "name",
+                  "parentColumn": "ParentResource",
+                  "treeType": 0,
+                  "expanderColumn": "id",
+                  "expandTopLevel": true
+                },
+                "sortBy": [
+                  {
+                    "itemKey": "type",
+                    "sortOrder": 1
+                  }
+                ],
+                "labelSettings": [
+                  {
+                    "columnId": "state",
+                    "label": "State"
+                  },
+                  {
+                    "columnId": "Availability (Average)",
+                    "label": "Storage Availability"
+                  },
+                  {
+                    "columnId": "id",
+                    "label": "Resource Name"
+                  },
+                  {
+                    "columnId": "type",
+                    "label": "Resource Type"
+                  },
+                  {
+                    "columnId": "resourceGroup",
+                    "label": "Resouce Group"
+                  },
+                  {
+                    "columnId": "Overall Vault Availability (Average)",
+                    "label": "Vault Availability"
+                  }
+                ]
+              },
+              "sortBy": [
+                {
+                  "itemKey": "type",
+                  "sortOrder": 1
+                }
+              ]
+            },
+            "showPin": false,
+            "name": "Merge of WebApps"
+          },
+          {
+            "type": 1,
+            "content": {
+              "json": "**Applicatons WebTest**"
+            },
+            "name": "Applications WebTest",
+            "styleSettings": {
+              "showBorder": true
+            }
+          },
+          {
+            "type": 9,
+            "content": {
+              "version": "KqlParameterItem/1.0",
+              "crossComponentResources": [
+                "{Resources}"
+              ],
+              "parameters": [
+                {
+                  "id": "f8f33651-e65e-4d49-a241-c436fdb5a317",
+                  "version": "KqlParameterItem/1.0",
+                  "name": "Subscriptions",
+                  "type": 6,
+                  "isRequired": true,
+                  "multiSelect": true,
+                  "quote": "'",
+                  "delimiter": ",",
+                  "query": "Resources\r\n| where type =~ 'microsoft.insights/webtests'\r\n| summarize dcount(name) by subscriptionId\r\n| order by dcount_name desc\r\n| extend Rank = row_number()\r\n| project value = subscriptionId, label = subscriptionId, selected = Rank == 1",
+                  "crossComponentResources": [
+                    "{Subscription}"
+                  ],
+                  "typeSettings": {
+                    "limitSelectTo": 100,
+                    "additionalResourceOptions": [
+                      "value::all"
+                    ],
+                    "showDefault": false
+                  },
+                  "timeContext": {
+                    "durationMs": 86400000
+                  },
+                  "queryType": 1,
+                  "resourceType": "microsoft.resourcegraph/resources"
+                },
+                {
+                  "id": "cac03137-59a9-4679-b605-15da3e5cffc0",
+                  "version": "KqlParameterItem/1.0",
+                  "name": "Resource_Group",
+                  "label": "Resource Group",
+                  "type": 2,
+                  "isRequired": true,
+                  "multiSelect": true,
+                  "quote": "'",
+                  "delimiter": ",",
+                  "query": "Resources\r\n| where type =~ 'microsoft.insights/components'\r\n| summarize count() by resourceGroup, subscriptionId\r\n| order by count_ desc\r\n| extend Rank = row_number()\r\n| project value = resourceGroup, label = resourceGroup, selected = Rank <= 1",
+                  "crossComponentResources": [
+                    "{Subscription}"
+                  ],
+                  "typeSettings": {
+                    "limitSelectTo": 100,
+                    "additionalResourceOptions": [
+                      "value::all"
+                    ],
+                    "showDefault": false
+                  },
+                  "timeContext": {
+                    "durationMs": 86400000
+                  },
+                  "queryType": 1,
+                  "resourceType": "microsoft.resourcegraph/resources",
+                  "value": [
+                    "value::all"
+                  ]
+                },
+                {
+                  "id": "cdf7ce36-3b35-48dd-9819-8cca7ed2783f",
+                  "version": "KqlParameterItem/1.0",
+                  "name": "Resources",
+                  "label": "App Insights Resources",
+                  "type": 5,
+                  "isRequired": true,
+                  "multiSelect": true,
+                  "quote": "'",
+                  "delimiter": ",",
+                  "query": "Resources\r\n| where type =~ 'microsoft.insights/components'\r\n| where array_length(dynamic([{Resource_Group}])) == 0 or '*' in ({Resource_Group}) or  resourceGroup in~ ({Resource_Group})\r\n| extend lowerId = tolower(id)\r\n| join kind = leftouter (Resources\r\n| extend linkedResource = extract(@'\"hidden-link:([\\/\\w\\-\\.]+)\"', 1, tostring(tags)) \r\n| extend lowerLinked = tolower(linkedResource)\r\n| project id, lowerLinked, linkedResource) on $left.lowerId == $right.lowerLinked\r\n| project-away lowerLinked, lowerId\r\n| summarize count() by id, subscriptionId\r\n| project value = id, label = id, total = (count_ - 1)\r\n| order by total, value, label desc\r\n| project value, label",
+                  "crossComponentResources": [
+                    "{Subscription}"
+                  ],
+                  "typeSettings": {
+                    "limitSelectTo": 100,
+                    "additionalResourceOptions": [
+                      "value::all"
+                    ]
+                  },
+                  "timeContext": {
+                    "durationMs": 86400000
+                  },
+                  "queryType": 1,
+                  "resourceType": "microsoft.resourcegraph/resources",
+                  "value": [
+                    "value::all"
+                  ]
+                },
+                {
+                  "id": "62d55555-0eb2-436f-a5f5-41e8a23e30b4",
+                  "version": "KqlParameterItem/1.0",
+                  "name": "TimeRange",
+                  "label": "Time Range",
+                  "type": 4,
+                  "description": "Define the overall time period you report on",
+                  "isRequired": true,
+                  "typeSettings": {
+                    "selectableValues": [
+                      {
+                        "durationMs": 3600000
+                      },
+                      {
+                        "durationMs": 43200000
+                      },
+                      {
+                        "durationMs": 86400000
+                      },
+                      {
+                        "durationMs": 172800000
+                      },
+                      {
+                        "durationMs": 259200000
+                      },
+                      {
+                        "durationMs": 604800000
+                      }
+                    ]
+                  },
+                  "timeContext": {
+                    "durationMs": 86400000
+                  },
+                  "value": {
+                    "durationMs": 259200000
+                  }
+                },
+                {
+                  "id": "396b1c40-17eb-4d0e-b096-7ecec6d1d6a2",
+                  "version": "KqlParameterItem/1.0",
+                  "name": "WebTests",
+                  "label": "Web Tests",
+                  "type": 2,
+                  "isRequired": true,
+                  "multiSelect": true,
+                  "quote": "'",
+                  "delimiter": ",",
+                  "query": "availabilityResults\r\n| distinct name\r\n| order by name asc\r\n| extend Rank = row_number()\r\n| project value = name, label = name, selected = Rank <= 20",
+                  "crossComponentResources": [
+                    "{Resources}"
+                  ],
+                  "typeSettings": {
+                    "limitSelectTo": 100,
+                    "additionalResourceOptions": [
+                      "value::all"
+                    ],
+                    "showDefault": false
+                  },
+                  "timeContext": {
+                    "durationMs": 0
+                  },
+                  "timeContextFromParameter": "TimeRange",
+                  "queryType": 0,
+                  "resourceType": "microsoft.insights/components"
+                },
+                {
+                  "id": "e2949e4b-a8fe-4cf7-8851-126634db4014",
+                  "version": "KqlParameterItem/1.0",
+                  "name": "Target_Nines",
+                  "label": "Availability Target %",
+                  "type": 1,
+                  "isRequired": true,
+                  "timeContext": {
+                    "durationMs": 0
+                  },
+                  "timeContextFromParameter": "TimeRange",
+                  "value": "99.5"
+                }
+              ],
+              "style": "above",
+              "queryType": 0,
+              "resourceType": "microsoft.insights/components"
+            },
+            "customWidth": "50",
+            "name": "Resouce Parameters"
+          },
+          {
+            "type": 9,
+            "content": {
+              "version": "KqlParameterItem/1.0",
+              "parameters": [
+                {
+                  "id": "4246c165-8536-4223-b99c-62ad2195b0e9",
+                  "version": "KqlParameterItem/1.0",
+                  "name": "FailureThreshold",
+                  "label": "Failure Threshold",
+                  "type": 1,
+                  "description": "Define how many location failures constitutes a service outage",
+                  "isRequired": true,
+                  "criteriaData": [
+                    {
+                      "criteriaContext": {
+                        "operator": "Default",
+                        "resultValType": "static",
+                        "resultVal": "3"
+                      }
+                    }
+                  ],
+                  "timeContext": {
+                    "durationMs": 86400000
+                  }
+                },
+                {
+                  "id": "9154ec3c-66fe-4d7e-8438-5fb9240c686b",
+                  "version": "KqlParameterItem/1.0",
+                  "name": "OutageWindow",
+                  "label": "Outage Window (minutes)",
+                  "type": 1,
+                  "isRequired": true,
+                  "criteriaData": [
+                    {
+                      "criteriaContext": {
+                        "operator": "Default",
+                        "resultValType": "static",
+                        "resultVal": "5"
+                      }
+                    }
+                  ],
+                  "timeContext": {
+                    "durationMs": 86400000
+                  }
+                },
+                {
+                  "id": "34499e9b-fba1-4285-959f-90b5546233da",
+                  "version": "KqlParameterItem/1.0",
+                  "name": "Maintenance_Period",
+                  "label": "Maintenance Period",
+                  "type": 2,
+                  "description": "Select the time period your maintenance window occurs over",
+                  "isRequired": true,
+                  "typeSettings": {
+                    "additionalResourceOptions": [],
+                    "showDefault": false
+                  },
+                  "jsonData": "[\r\n    { \"value\":3, \"label\":\"Never\", \"selected\":true},\r\n    { \"value\":1, \"label\":\"Weekly\"},\r\n    { \"value\":2, \"label\":\"Daily\" }\r\n]",
+                  "timeContext": {
+                    "durationMs": 86400000
+                  }
+                },
+                {
+                  "id": "fe5ae029-1457-4462-880a-224e1fcb89bc",
+                  "version": "KqlParameterItem/1.0",
+                  "name": "Maintenance_Window",
+                  "label": "Maintenance Window",
+                  "type": 4,
+                  "isRequired": true,
+                  "typeSettings": {
+                    "selectableValues": [],
+                    "allowCustom": true
+                  },
+                  "timeContext": {
+                    "durationMs": 86400000
+                  },
+                  "value": {
+                    "durationMs": 2678400000,
+                    "endTime": "2024-12-18T18:11:00.000Z"
+                  }
+                }
+              ],
+              "style": "above",
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces"
+            },
+            "customWidth": "50",
+            "name": "parameters - 9"
+          },
+          {
+            "type": 9,
+            "content": {
+              "version": "KqlParameterItem/1.0",
+              "parameters": [
+                {
+                  "id": "54d8cf31-91c4-41e3-ab92-763388c610ff",
+                  "version": "KqlParameterItem/1.0",
+                  "name": "ThresWindow",
+                  "type": 1,
+                  "isHiddenWhenLocked": true,
+                  "criteriaData": [
+                    {
+                      "criteriaContext": {
+                        "operator": "Default",
+                        "resultValType": "static",
+                        "resultVal": "{Maintenance_Window:seconds}"
+                      }
+                    }
+                  ],
+                  "timeContext": {
+                    "durationMs": 86400000
+                  }
+                },
+                {
+                  "id": "5256496f-ee82-4cad-8911-f81d1113343e",
+                  "version": "KqlParameterItem/1.0",
+                  "name": "Threshold",
+                  "type": 1,
+                  "isHiddenWhenLocked": true,
+                  "criteriaData": [
+                    {
+                      "criteriaContext": {
+                        "leftOperand": "ThresWindow",
+                        "operator": "==",
+                        "rightValType": "static",
+                        "rightVal": "86400",
+                        "resultValType": "static",
+                        "resultVal": "Error"
+                      }
+                    },
+                    {
+                      "criteriaContext": {
+                        "operator": "Default",
+                        "resultValType": "static",
+                        "resultVal": "Success"
+                      }
+                    }
+                  ],
+                  "timeContext": {
+                    "durationMs": 86400000
+                  }
+                }
+              ],
+              "style": "above",
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces"
+            },
+            "customWidth": "50",
+            "name": "parameters - 10"
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "let adjustedMaintStart = case({Maintenance_Period} == 1, {Maintenance_Window:start} - startofweek({Maintenance_Window:start}), {Maintenance_Window:start} - startofday({Maintenance_Window:start})); //maintenance window variable dynamically set by parameters\r\nlet adjustedMaintEnd = case({Maintenance_Period} == 1, {Maintenance_Window:end} - startofweek({Maintenance_Window:end}), {Maintenance_Window:end} - startofday({Maintenance_Window:end})); //maintenance window variable dynamically set by parameters\r\navailabilityResults\r\n| where name in ({WebTests}) //web test filter\r\n| extend startLocalMaintenanceWindow = case({Maintenance_Period} == 1, startofweek(timestamp) + adjustedMaintStart, startofday(timestamp) + adjustedMaintStart) //beginning of maintenance filter\r\n| extend endLocalMaintenanceWindow = case({Maintenance_Period} == 1, startofweek(timestamp) + adjustedMaintEnd, startofday(timestamp) + adjustedMaintEnd)\r\n| where case({Maintenance_Period} == 1, timestamp !between (startLocalMaintenanceWindow .. endLocalMaintenanceWindow), \r\n            {Maintenance_Period} == 2, timestamp > endLocalMaintenanceWindow or timestamp < startLocalMaintenanceWindow, \r\n            timestamp == timestamp) //end of maintenance filter\r\n| project name, timestamp, startLocalMaintenanceWindow, endLocalMaintenanceWindow, duration, appName, location, success //start of actual query\r\n| project name, success, location, duration, appName, timestamp\r\n| where duration > 0\r\n| extend Outage = case(success contains '1', 0, 1)\r\n| summarize sum(Outage), avg(duration) by name, appName, bin(timestamp, {OutageWindow}m) //bin by outage window parameter\r\n| summarize ['Success Bins'] = todouble(countif(sum_Outage < toint({FailureThreshold}))), ['Fail Bins'] = todouble(countif(sum_Outage >= toint({FailureThreshold}))), ['Total Bins'] = todouble(count())\r\n| extend ['Web Test'] = 'Web Test', ['Test Success %'] = (['Success Bins'] / ['Total Bins'])*100 //calculate success percentage over chosen time period\r\n| extend ['Target 9s'] = iff(['Test Success %'] >= {Target_Nines}, 1, 0)\r\n| project ['Test Success %'], ['Target 9s'] //end of actual query",
+              "size": 4,
+              "timeContextFromParameter": "TimeRange",
+              "queryType": 0,
+              "resourceType": "microsoft.insights/components",
+              "crossComponentResources": [
+                "{Resources}"
+              ],
+              "visualization": "tiles",
+              "tileSettings": {
+                "titleContent": {
+                  "tooltipFormat": {}
+                },
+                "leftContent": {
+                  "columnMatch": "Test Success %",
+                  "formatter": 12,
+                  "formatOptions": {
+                    "min": 0,
+                    "max": 100,
+                    "palette": "redGreen"
+                  },
+                  "numberFormat": {
+                    "unit": 1,
+                    "options": {
+                      "style": "decimal"
+                    }
+                  }
+                },
+                "secondaryContent": {
+                  "columnMatch": "Target 9s",
+                  "formatter": 18,
+                  "formatOptions": {
+                    "thresholdsOptions": "icons",
+                    "thresholdsGrid": [
+                      {
+                        "operator": "==",
+                        "thresholdValue": "1",
+                        "representation": "success",
+                        "text": "{1} On Target"
+                      },
+                      {
+                        "operator": "==",
+                        "thresholdValue": "0",
+                        "representation": "warning",
+                        "text": "{1} Under Target"
+                      },
+                      {
+                        "operator": "Default",
+                        "thresholdValue": null,
+                        "representation": "success",
+                        "text": "{0}{1}"
+                      }
+                    ]
+                  }
+                },
+                "showBorder": false,
+                "size": "auto"
+              },
+              "graphSettings": {
+                "type": 0
+              }
+            },
+            "name": "query - 12"
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "let adjustedMaintStart = case({Maintenance_Period} == 1, {Maintenance_Window:start} - startofweek({Maintenance_Window:start}), {Maintenance_Window:start} - startofday({Maintenance_Window:start})); //maintenance window variable dynamically set by parameters\r\nlet adjustedMaintEnd = case({Maintenance_Period} == 1, {Maintenance_Window:end} - startofweek({Maintenance_Window:end}), {Maintenance_Window:end} - startofday({Maintenance_Window:end})); //maintenance window variable dynamically set by parameters\r\navailabilityResults\r\n| where name in ({WebTests}) //web test filter\r\n| extend startLocalMaintenanceWindow = case({Maintenance_Period} == 1, startofweek(timestamp) + adjustedMaintStart, startofday(timestamp) + adjustedMaintStart) //beginning of maintenance filter\r\n| extend endLocalMaintenanceWindow = case({Maintenance_Period} == 1, startofweek(timestamp) + adjustedMaintEnd, startofday(timestamp) + adjustedMaintEnd)\r\n| where case({Maintenance_Period} == 1, timestamp !between (startLocalMaintenanceWindow .. endLocalMaintenanceWindow), \r\n            {Maintenance_Period} == 2, timestamp > endLocalMaintenanceWindow or timestamp < startLocalMaintenanceWindow, \r\n            timestamp == timestamp) //end of maintenance filter\r\n| project name, timestamp, duration, appName, location, success\r\n| project name, success, location, duration, appName, timestamp\r\n| where duration > 0\r\n| extend Outage = case(success contains '1', 0, 1)\r\n| summarize sum(Outage), avg(duration) by name, appName, bin(timestamp, {OutageWindow}m)\r\n| summarize ['Success Bins'] = todouble(countif(sum_Outage < toint({FailureThreshold}))), ['Fail Bins'] = todouble(countif(sum_Outage >= toint({FailureThreshold}))), ['Total Bins'] = todouble(count()), ['Max Duration'] = max(avg_duration), ['Avg Duration'] = avg(avg_duration) by name, appName\r\n| extend ['Web Test'] = 'Web Test', ['Test Success %'] = (['Success Bins'] / ['Total Bins'])*100\r\n| join kind=leftouter (\r\n    availabilityResults\r\n    | where name in ({WebTests})\r\n    | extend startLocalMaintenanceWindow = case({Maintenance_Period} == 1, startofweek(timestamp) + adjustedMaintStart, startofday(timestamp) + adjustedMaintStart)\r\n    | extend endLocalMaintenanceWindow = case({Maintenance_Period} == 1, startofweek(timestamp) + adjustedMaintEnd, startofday(timestamp) + adjustedMaintEnd)\r\n    | where case({Maintenance_Period} == 1, timestamp !between (startLocalMaintenanceWindow .. endLocalMaintenanceWindow), \r\n            {Maintenance_Period} == 2, timestamp > endLocalMaintenanceWindow or timestamp < startLocalMaintenanceWindow, \r\n            timestamp == timestamp)\r\n    | project name, timestamp, startLocalMaintenanceWindow, endLocalMaintenanceWindow, duration, appName, location, success\r\n    | extend Outage = case(success contains '1', 0, 1)\r\n    | project name, appName, timestamp, location, Outage\r\n    | summarize sum(Outage) by appName, name, bin(timestamp, {OutageWindow}m)\r\n    | sort by appName, name, timestamp\r\n    | where sum_Outage >= {FailureThreshold} //filter down to outages only\r\n    | extend OutageClassification = case(\r\n    name != prev(name), 'End of Outage', //bracket test name by final outage\r\n    name != next(name), 'Beginning of Outage', //bracket test name by initial outage time\r\n    name == next(name) and next(timestamp) == timestamp - {OutageWindow}m, 'Inner Outage', //if the previous record has a timestamp with the outage window difference then same outage\r\n    name == next(name) and next(timestamp) != timestamp - {OutageWindow}m, 'Beginning', //if the next timestamp is different by more than outagewindow then it is a new outage\r\n    'ELSE')\r\n    | extend OutageClassification = case(\r\n    name != prev(name) and name != next(name), 'Singular Outage',\r\n    OutageClassification == 'Beginning of Outage' and prev(timestamp) != timestamp + {OutageWindow}m, 'Singular Outage' ,//Single bin outage\r\n OutageClassification == 'Beginning' and prev(OutageClassification) == 'Beginning', 'Singular Outage',//Single bin outage\r\nOutageClassification == 'End of Outage' and next(timestamp) != timestamp - {OutageWindow}m, 'Singular Outage' //Single bin outage\r\n    ,OutageClassification)\r\n    | extend OutageClassification = case(\r\n    OutageClassification == 'Inner Outage' and prev(timestamp) != timestamp + {OutageWindow}m, 'Ending' //identify time shifts that signify end of outages\r\n    ,OutageClassification)\r\n    | where OutageClassification != 'Inner Outage' //filter out unnecessary values\r\n    | extend BeginningDate = case(\r\n    OutageClassification == 'End of Outage', next(timestamp),\r\n    OutageClassification == 'Ending', next(timestamp)\r\n    ,timestamp) //set the correct beginning date based on record\r\n    | extend EndingDate = case(\r\n    OutageClassification == 'Singular Outage', timestamp + {OutageWindow}m\r\n    ,timestamp) //consolidate records around the outage ending record\r\n    | where OutageClassification != 'Beginning of Outage' and OutageClassification != 'Beginning' //filter down to the full instances\r\n    | extend TotalOutageTime = EndingDate - BeginningDate\r\n    | summarize count() by name, appName\r\n    | project name, appName,['Outage Count'] = count_\r\n        ) on name, appName\r\n| extend ['Target 9s'] = iff(['Test Success %'] > {Target_Nines}, 1, 0)\r\n| extend ['Outage Count'] = iif(['Outage Count'] > 0, ['Outage Count'], 0)\r\n| project ['Web Test'], name, appName, ['Success Bins'], ['Fail Bins'], ['Total Bins'],['Avg Duration'],['Max Duration'],['Test Success %'],['Outage Count'], ['Target 9s']",
+              "size": 0,
+              "timeContextFromParameter": "TimeRange",
+              "queryType": 0,
+              "resourceType": "microsoft.insights/components",
+              "crossComponentResources": [
+                "{Resources}"
+              ],
+              "visualization": "table",
+              "gridSettings": {
+                "formatters": [
+                  {
+                    "columnMatch": "Web Test",
+                    "formatter": 5
+                  },
+                  {
+                    "columnMatch": "name",
+                    "formatter": 5
+                  },
+                  {
+                    "columnMatch": "appName",
+                    "formatter": 5
+                  },
+                  {
+                    "columnMatch": "Success Bins",
+                    "formatter": 5
+                  },
+                  {
+                    "columnMatch": "Fail Bins",
+                    "formatter": 5
+                  },
+                  {
+                    "columnMatch": "Total Bins",
+                    "formatter": 22,
+                    "formatOptions": {
+                      "aggregation": "Sum",
+                      "compositeBarSettings": {
+                        "labelText": "[\"Success Bins\"] of [\"Total Bins\"] available",
+                        "columnSettings": [
+                          {
+                            "columnName": "Success Bins",
+                            "color": "green"
+                          },
+                          {
+                            "columnName": "Fail Bins",
+                            "color": "redBright"
+                          }
+                        ]
+                      }
+                    }
+                  },
+                  {
+                    "columnMatch": "Avg Duration",
+                    "formatter": 8,
+                    "formatOptions": {
+                      "min": 0,
+                      "palette": "turquoise",
+                      "aggregation": "Average",
+                      "customColumnWidthSetting": "120px"
+                    },
+                    "numberFormat": {
+                      "unit": 23,
+                      "options": {
+                        "style": "decimal",
+                        "maximumFractionDigits": 2
+                      }
+                    }
+                  },
+                  {
+                    "columnMatch": "Max Duration",
+                    "formatter": 8,
+                    "formatOptions": {
+                      "palette": "blue",
+                      "aggregation": "Max",
+                      "customColumnWidthSetting": "120px"
+                    },
+                    "numberFormat": {
+                      "unit": 23,
+                      "options": {
+                        "style": "decimal",
+                        "maximumFractionDigits": 2
+                      }
+                    }
+                  },
+                  {
+                    "columnMatch": "Test Success %",
+                    "formatter": 8,
+                    "formatOptions": {
+                      "min": 0,
+                      "max": 100,
+                      "palette": "redGreen",
+                      "customColumnWidthSetting": "130px"
+                    },
+                    "numberFormat": {
+                      "unit": 1,
+                      "options": {
+                        "style": "decimal",
+                        "maximumFractionDigits": 2
+                      }
+                    }
+                  },
+                  {
+                    "columnMatch": "Outage Count",
+                    "formatter": 4,
+                    "formatOptions": {
+                      "min": 0,
+                      "palette": "red",
+                      "aggregation": "Sum",
+                      "customColumnWidthSetting": "130px"
+                    }
+                  },
+                  {
+                    "columnMatch": "Target 9s",
+                    "formatter": 18,
+                    "formatOptions": {
+                      "thresholdsOptions": "icons",
+                      "thresholdsGrid": [
+                        {
+                          "operator": "==",
+                          "thresholdValue": "1",
+                          "representation": "success",
+                          "text": "On Target"
+                        },
+                        {
+                          "operator": "==",
+                          "thresholdValue": "0",
+                          "representation": "2",
+                          "text": "Under Target"
+                        },
+                        {
+                          "operator": "Default",
+                          "thresholdValue": null,
+                          "representation": "success",
+                          "text": "{0}{1}"
+                        }
+                      ],
+                      "aggregation": "Min"
+                    }
+                  }
+                ],
+                "hierarchySettings": {
+                  "treeType": 1,
+                  "groupBy": [
+                    "Web Test"
+                  ],
+                  "finalBy": "name"
+                }
+              }
+            },
+            "name": "query - 11"
+          }
+        ]
+      },
+      "name": "Saxana, Plex"
+    }
+  ],
+  "fallbackResourceIds": [
+    "azure monitor"
+  ],
+  "$schema": "https://github.com/Microsoft/Application-Insights-Workbooks/blob/master/schema/workbook.json"
+}
