@@ -1,18 +1,58 @@
 resources
 | where type == "microsoft.web/sites"
+    | union (
+    resources
+    | mv-expand tags
+    | extend ParentResource = (parse_json(tags).ParentResource)
+    | where isnotempty(ParentResource)
+    )
+    | extend ParentResource = split(ParentResource, ",")
+    | mv-expand ParentResource   
+    | extend state = tolower(properties.state)
+    | extend status = tolower(properties.status)
+    | extend provisioningState = tolower(properties.provisioningState)
+    | project id, name, state, status, provisioningState, type, resourceGroup, ParentResource
+//| extend state = tolower(
+  //      iff(isnotempty (properties.status), properties.status, 
+    //    iff(isnotempty (properties.provisioningState),properties.provisioningState,"noavailable"))
+      //  )
+
+
+sql managed isntannce - properties.state and provisionning.state (status online)
+managed database instance - properties.status
+log anal - provision.state _(active) + health ma
+
+resources
+| where type == "microsoft.web/sites"
+| extend status = tostring(properties.status)
+| project id, name, status
+
+
+resources
+| where type == "microsoft.web/sites"
+| extend state = tolower(tostring(properties.state))
+| union (
+    resources
+    | mv-expand tags
+    | extend ParentResource = parse_json(tags).ParentResource
+    | where isnotempty(ParentResource)
+    | extend state = tolower(tostring(properties.state)) // Add a fallback if needed
+)
+| extend ParentResource = split(ParentResource, ",")
+| mv-expand ParentResource
+| extend status = tolower(tostring(properties.status))
+| extend provisioningState = tolower(tostring(properties.provisioningState))
+| project id, name, state, status, provisioningState, type, resourceGroup, ParentResource
+
+
+
+resources
+| where type == "microsoft.web/sites"
 | union (
     resources
     | mv-expand tags
     | extend ParentResource = parse_json(tags).ParentResource
     | where isnotempty(ParentResource)
 )
-| extend ParentResource = split(ParentResource, ",")
-| mv-expand ParentResource
-| extend state = tolower(
-    iff(isnotempty(properties.status), properties.status,
-        iff(isnotempty(properties.provisioningState), properties.provisioningState,
-            iff(isnotempty(properties.state), properties.state, "noavailable")
-        )
-    )
-)
+| extend state = tostring(properties.state)
 | project id, name, state, type, resourceGroup, ParentResource
