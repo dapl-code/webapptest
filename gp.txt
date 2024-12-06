@@ -1,0 +1,18 @@
+resources
+| where type == "microsoft.web/sites"
+| union (
+    resources
+    | mv-expand tags
+    | extend ParentResource = parse_json(tags).ParentResource
+    | where isnotempty(ParentResource)
+)
+| extend ParentResource = split(ParentResource, ",")
+| mv-expand ParentResource
+| extend state = tolower(
+    iff(isnotempty(properties.status), properties.status,
+        iff(isnotempty(properties.provisioningState), properties.provisioningState,
+            iff(isnotempty(properties.state), properties.state, "noavailable")
+        )
+    )
+)
+| project id, name, state, type, resourceGroup, ParentResource
