@@ -8,7 +8,6 @@ resources
     state = tostring(properties.state),
     status = tostring(properties.status),
     provisioningState = tostring(properties.provisioningState),
-    overallState = iff(isnotempty(properties.state) or isnotempty(properties.provisioningState) or isnotempty(properties.status), 
-                       iff(properties.state == "Disabled" or properties.status == "Stopped" or properties.provisioningState == "Disabled", "0", "1"), 
-                       "")
-| project id, ParentResource, overallState, state, status, provisioningState
+    overallState = iff(isnotempty(properties.state) or isnotempty(properties.provisioningState) or isnotempty(properties.status),
+                       iff(properties.state == "Disabled" or properties.status == "Stopped" or properties.provisioningState == "Disabled", "0", "1"), "")
+| project id, overallState, ParentResource, state, status, provisioningState, type, name
