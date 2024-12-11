@@ -26,3 +26,11 @@ resources
     provisioningState = tostring(properties.provisioningState),
     overallState = iff(isnotempty(properties.state) or isnotempty(properties.provisioningState) or isnotempty(properties.status),
                        iff(properties.state == "Disabled" or properties.status == "Stopped" or properties.provisioningState == "Disabled", "0", "1"), "")
+
+
+| join kind=inner (
+resources
+| where type == "microsoft.web/sites"
+| where resourceGroup in ({ResourceGroups})
+| project ParentResourceName=name,ParentResourceResourceGroup=resourceGroup,ParentResourceSubscription=subscriptionId
+) on $left.ParentResource==$right.ParentResourceName
