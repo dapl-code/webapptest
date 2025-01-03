@@ -1,0 +1,35 @@
+//let tag_parentresource = "ParentResource";
+//let tag_componentcode = "component-code";
+resources
+| where type == "microsoft.web/sites"
+| where resourceGroup in ({ResourceGroups})
+//| mv-expand tags
+| extend ParentResource = tostring(parse_json(tags).["ParentResource"])
+| extend ComponentCode = tostring(parse_json(tags).["component-code"])
+| where isnotempty(ParentResource)
+| extend ParentResource = split(ParentResource, ",")
+| mv-expand ParentResource
+| extend ParentResource=tostring(ParentResource)
+//| project name, ParentResource, ComponentCode  
+| union (
+resources
+| where type != "microsoft.web/sites"
+//| mv-expand tags
+| extend ParentResource = tostring(parse_json(tags).ParentResource)
+| where isnotempty(ParentResource)
+| extend ParentResource = split(ParentResource, ",")
+| mv-expand ParentResource
+| extend ParentResource=tostring(ParentResource)
+| join kind=inner (
+resources
+| where type == "microsoft.web/sites"
+| where resourceGroup in ({ResourceGroups})
+| project ParentResourceName=name,ParentResourceResourceGroup=resourceGroup,ParentResourceSubscriptionId=subscriptionId
+) on $left.ParentResource==$right.ParentResourceName
+)
+| extend 
+    state = tostring(properties.state),
+    status = tostring(properties.status),
+    provisioningState = tostring(properties.provisioningState),
+    overallState = iff(isnotempty(properties.state) or isnotempty(properties.provisioningState) or isnotempty(properties.status),
+                       iff(properties.state == "Disabled" or properties.status == "Stopped" or properties.provisioningState == "Disabled", "0", "1"), "")
