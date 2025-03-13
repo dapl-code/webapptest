@@ -1,0 +1,150 @@
+Powershell overeni klicu:
+ 
+Get-ItemProperty -Path "HKLM:\Software\Microsoft\Cryptography\Wintrust\Config" -Name "EnableCertPaddingCheck"
+Get-ItemProperty -Path "HKLM:\Software\Wow6432Node\Microsoft\Cryptography\Wintrust\Config" -Name "EnableCertPaddingCheck"
+ 
+  
+Powershell vytvoreni klicu:
+ 
+# Cesty k registrům pro 64bitové Windows
+$registryPaths = @(
+    "HKLM:\Software\Microsoft\Cryptography\Wintrust\Config",
+    "HKLM:\Software\Wow6432Node\Microsoft\Cryptography\Wintrust\Config"
+)
+ 
+$registryName = "EnableCertPaddingCheck"
+$registryValue = 1  # DWORD hodnota
+ 
+# Funkce pro nastavení registru
+Function Set-RegistryKey {
+    param (
+        [string]$Path,
+        [string]$Name,
+        [int]$Value
+    )
+    # Pokud cesta neexistuje, vytvoří ji
+    If (!(Test-Path $Path)) {
+        New-Item -Path $Path -Force | Out-Null
+    }
+    # Nastaví hodnotu v registru jako DWORD
+    Set-ItemProperty -Path $Path -Name $Name -Value $Value -Type DWord
+    Write-Host "Nastaveno: $Path\$Name = $Value (DWORD)"
+}
+ 
+# Aplikace změn na obě registry větve
+foreach ($path in $registryPaths) {
+    Set-RegistryKey -Path $path -Name $registryName -Value $registryValue
+}
+ 
+Write-Host "Registrace dokončena. Doporučeno restartovat systém pro plnou aplikaci změn."
+ 
+ 
+Powershell - vraceni zpět na hodnotu 0lo:
+ 
+Set-ItemProperty -Path "HKLM:\Software\Microsoft\Cryptography\Wintrust\Config" -Name "EnableCertPaddingCheck" -Value 0 -Type DWord
+Set-ItemProperty -Path "HKLM:\Software\Wow6432Node\Microsoft\Cryptography\Wintrust\Config" -Name "EnableCertPaddingCheck" -Value 0 -Type DWord
+Write-Host "Nastavení bylo deaktivováno. Restartuj systém."
+ 
+EVENT VIEWER:
+ 
+	· Applications and Services Logs → Microsoft → Windows → CodeIntegrity → Operational (chyby podepsaných souborů)
+	· Applications and Services Logs → Microsoft → Windows → WinVerifyTrust (ověření podpisů)
+	 
+	Event ID		Zdroj (Source)		Popis	 
+	3089	WinVerifyTrust		Podepsaný soubor byl odmítnut kvůli nesprávnému podpisu.		
+						
+	
+	3099	WinVerifyTrust		Zablokovaný podepsaný soubor kvůli bezpečnostním zásadám.	
+	6281	CodeIntegrity	Blokovaný soubor kvůli podezřelé změně podpisu.		 
+					
+	
+	5038	Security-Auditing		Integrita podepsaného souboru je narušena.	 
+	3079	WinVerifyTrust	Upozornění o neplatném podpisu souboru (podezřelé).		
+					
+	
+	5031	Security-Auditing	Firewall zablokoval přístup aplikace kvůli podepisovacím problémům.		
+	5145	Security-Auditing		Přístup k podepsanému souboru byl zamítnut.	 
+					
+	
+	7023	Service Control Manager	Systémová služba se nemůže spustit kvůli problémům s ověřením podpisu.
+	7026	Service Control Manager	Některé ovladače se nepodařilo načíst, pravděpodobně kvůli podpisovým požadavkům.
+	 
+	 
+	Rychlejsi skript – eventy za 24H
+	 
+	# Definice kritických Event ID souvisejících s WinTrust
+	$eventIDs = @(3089, 3099, 6281, 5038, 3079, 5031, 5145, 7023, 7026)
+	 
+	# Definice časového filtru (posledních 24 hodin)
+	$timeThreshold = (Get-Date).AddHours(-24)
+	 
+	# Seznam logů, které budeme prohledávat
+	$logNames = @("Application", "Security", "System")
+	 
+	foreach ($log in $logNames) {
+	    Write-Host "Hledám události v logu: $log za posledních 24 hodin..." -ForegroundColor Cyan
+	 
+	    # Použití optimalizovaného filtru pro výkon
+	    $filter = @{
+	        LogName = $log
+	        Id = $eventIDs
+	        StartTime = $timeThreshold
+	    }
+	 
+	    # Pouze pokud log obsahuje relevantní eventy
+	    try {
+	        $events = Get-WinEvent -FilterHashtable $filter -ErrorAction Stop
+	    } catch {
+	        Write-Host "Log $log je prázdný nebo nedostupný." -ForegroundColor Yellow
+	        continue
+	    }
+	 
+	    # Výpis nalezených eventů
+	    if ($events) {
+	        $events | Select-Object TimeCreated, Id, ProviderName, Message | Format-Table -AutoSize
+	    } else {
+	        Write-Host "Žádné kritické události nenalezeny v $log za posledních 24 hodin." -ForegroundColor Green
+	    }
+	}
+	 
+	 
+	Připojení na vzdálený server:
+	 
+	# Požádá uživatele o zadání názvu vzdáleného počítače
+	$RemoteComputer = Read-Host "Zadej jmeno serveru"
+	 
+	# Definice kritických Event ID souvisejících s WinTrust
+	$eventIDs = @(3089, 3099, 6281, 5038, 3079, 5031, 5145, 7023, 7026)
+	 
+	# Definice časového filtru (posledních 24 hodin)
+	$timeThreshold = (Get-Date).AddHours(-24)
+	 
+	# Seznam logů, které budeme prohledávat
+	$logNames = @("Application", "Security", "System")
+	 
+	foreach ($log in $logNames) {
+	    Write-Host "Hledám události v logu: $log na $RemoteComputer za posledních 24 hodin..." -ForegroundColor Cyan
+	 
+	    # Použití optimalizovaného filtru pro výkon
+	    $filter = @{
+	        LogName = $log
+	        Id = $eventIDs
+	        StartTime = $timeThreshold
+	    }
+	 
+	    # Pouze pokud log obsahuje relevantní eventy
+	    try {
+	        $events = Get-WinEvent -ComputerName $RemoteComputer -FilterHashtable $filter -ErrorAction Stop
+	    } catch {
+	        Write-Host "Log $log na $RemoteComputer je prázdný nebo nedostupný." -ForegroundColor Yellow
+	        continue
+	    }
+	 
+	    # Výpis nalezených eventů
+	    if ($events) {
+	        $events | Select-Object TimeCreated, Id, ProviderName, Message | Format-Table -AutoSize
+	        Write-Host "Žádné kritické události nenalezeny v $log na $RemoteComputer za posledních 24 hodin." -ForegroundColor Green
+	    }
+	}
+	 
+	  } else {
