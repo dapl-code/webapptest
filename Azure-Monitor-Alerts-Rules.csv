@@ -1,0 +1,99 @@
+Name,Condition,Severity,Target scope,Target resource type,Signal type,Status
+Agenda Performance Monitoring - AgendaSelect,Table rows >= 1 ,Sev2,z-aas-plex-plex-pra-ew1-ain03,Application Insights,microsoft.insights/scheduledqueryrules,Enabled
+Agenda Performance Monitoring - AgendaUniqueCount,Table rows >= 1 ,Sev2,z-aas-plex-plex-pra-ew1-ain03,Application Insights,microsoft.insights/scheduledqueryrules,Enabled
+argus-fe-z-aas-args-args-pra-ew1-ain01,Failed locations >= 1,Sev1,z-aas-args-args-pra-ew1-ain01,Application Insights,microsoft.insights/metricalerts,Enabled
+Automation errors - PRA - over 1 minute,itemCount >= 1 ,Sev0,z-aas-plex-plex-pra-ew1-ain14,Application Insights,microsoft.insights/scheduledqueryrules,Enabled
+Automation errors - PRD - over 1 minute,itemCount >= 1 ,Sev0,z-aas-plex-plex-pra-ew1-ain03,Application Insights,microsoft.insights/scheduledqueryrules,Enabled
+Deadlocks - PRA - over 1 hour,Table rows > 1 ,Sev2,z-aas-plex-plex-pra-ew1-ain14,Application Insights,microsoft.insights/scheduledqueryrules,Enabled
+Deadlocks - PRD - over 1 hour,Table rows > 1 ,Sev2,z-aas-plex-plex-pra-ew1-ain03,Application Insights,microsoft.insights/scheduledqueryrules,Enabled
+Errors notification,requests/failed > 0 and 1 more condition,Sev2,z-aas-plex-plex-dva-ew1-ain04,Application Insights,microsoft.insights/metricalerts,Enabled
+Failure Anomalies - plex3dev,Failure Anomalies detected,Sev3,plex3dev,Application Insights,microsoft.alertsmanagement/smartdetectoralertrules,Enabled
+Failure Anomalies - z-aas-args-args-dva-ew1-ain01,Failure Anomalies detected,Sev3,z-aas-args-args-dva-ew1-ain01,Application Insights,microsoft.alertsmanagement/smartdetectoralertrules,Enabled
+Failure Anomalies - z-aas-args-args-ppa-ew1-ain01,Failure Anomalies detected,Sev3,z-aas-args-args-ppa-ew1-ain01,Application Insights,microsoft.alertsmanagement/smartdetectoralertrules,Enabled
+Failure Anomalies - z-aas-args-args-pra-en1-ain01,Failure Anomalies detected,Sev3,z-aas-args-args-pra-en1-ain01,Application Insights,microsoft.alertsmanagement/smartdetectoralertrules,Enabled
+Failure Anomalies - z-aas-args-args-pra-ew1-ain01,Failure Anomalies detected,Sev3,z-aas-args-args-pra-ew1-ain01,Application Insights,microsoft.alertsmanagement/smartdetectoralertrules,Enabled
+Failure Anomalies - z-aas-ew1-ain-wceeapp02,Failure Anomalies detected,Sev3,z-aas-ew1-ain-wceeapp02,Application Insights,microsoft.alertsmanagement/smartdetectoralertrules,Enabled
+Failure Anomalies - z-aas-ew1-ain-wceedevweb01,Failure Anomalies detected,Sev3,z-aas-ew1-ain-wceedevweb01,Application Insights,microsoft.alertsmanagement/smartdetectoralertrules,Enabled
+Failure Anomalies - z-aas-ew1-ain-wceeextweb01,Failure Anomalies detected,Sev3,z-aas-ew1-ain-wceeextweb01,Application Insights,microsoft.alertsmanagement/smartdetectoralertrules,Enabled
+Failure Anomalies - z-aas-ew1-ain-wceeprplxweb01,Failure Anomalies detected,Sev3,z-aas-ew1-ain-wceeprplxweb01,Application Insights,microsoft.alertsmanagement/smartdetectoralertrules,Enabled
+Failure Anomalies - z-aas-gwcc-sxna-dva-ew1-ain01,Failure Anomalies detected,Sev3,z-aas-gwcc-sxna-dva-ew1-ain01,Application Insights,microsoft.alertsmanagement/smartdetectoralertrules,Enabled
+Failure Anomalies - z-aas-plex-plex-dva-ew1-ain01,Failure Anomalies detected,Sev3,z-aas-plex-plex-dva-ew1-ain01,Application Insights,microsoft.alertsmanagement/smartdetectoralertrules,Enabled
+Failure Anomalies - z-aas-plex-plex-dva-ew1-ain02,Failure Anomalies detected,Sev3,z-aas-plex-plex-dva-ew1-ain02,Application Insights,microsoft.alertsmanagement/smartdetectoralertrules,Enabled
+Failure Anomalies - z-aas-plex-plex-dva-ew1-ain03,Failure Anomalies detected,Sev3,z-aas-plex-plex-dva-ew1-ain03,Application Insights,microsoft.alertsmanagement/smartdetectoralertrules,Enabled
+Failure Anomalies - z-aas-plex-plex-dva-ew1-ain05,Failure Anomalies detected,Sev3,z-aas-plex-plex-dva-ew1-ain05,Application Insights,microsoft.alertsmanagement/smartdetectoralertrules,Enabled
+Failure Anomalies - z-aas-plex-plex-dva-ew1-ain06,Failure Anomalies detected,Sev3,z-aas-plex-plex-dva-ew1-ain06,Application Insights,microsoft.alertsmanagement/smartdetectoralertrules,Enabled
+Failure Anomalies - z-aas-plex-plex-dva-ew1-ain07,Failure Anomalies detected,Sev3,z-aas-plex-plex-dva-ew1-ain07,Application Insights,microsoft.alertsmanagement/smartdetectoralertrules,Enabled
+Failure Anomalies - z-aas-plex-plex-dva-ew1-ain08,Failure Anomalies detected,Sev3,z-aas-plex-plex-dva-ew1-ain08,Application Insights,microsoft.alertsmanagement/smartdetectoralertrules,Enabled
+Failure Anomalies - z-aas-plex-plex-dva-ew1-ain09,Failure Anomalies detected,Sev3,z-aas-plex-plex-dva-ew1-ain09,Application Insights,microsoft.alertsmanagement/smartdetectoralertrules,Enabled
+Failure Anomalies - z-aas-plex-plex-dva-ew1-ain10,Failure Anomalies detected,Sev3,z-aas-plex-plex-dva-ew1-ain10,Application Insights,microsoft.alertsmanagement/smartdetectoralertrules,Enabled
+Failure Anomalies - z-aas-plex-plex-dva-ew1-ain11,Failure Anomalies detected,Sev3,z-aas-plex-plex-dva-ew1-ain11,Application Insights,microsoft.alertsmanagement/smartdetectoralertrules,Enabled
+Failure Anomalies - z-aas-plex-plex-dva-ew1-ain12,Failure Anomalies detected,Sev3,z-aas-plex-plex-dva-ew1-ain12,Application Insights,microsoft.alertsmanagement/smartdetectoralertrules,Enabled
+Failure Anomalies - z-aas-plex-plex-dva-ew1-ain13,Failure Anomalies detected,Sev3,z-aas-plex-plex-dva-ew1-ain13,Application Insights,microsoft.alertsmanagement/smartdetectoralertrules,Enabled
+Failure Anomalies - z-aas-plex-plex-dva-ew1-ain14,Failure Anomalies detected,Sev3,z-aas-plex-plex-dva-ew1-ain14,Application Insights,microsoft.alertsmanagement/smartdetectoralertrules,Enabled
+Failure Anomalies - z-aas-plex-plex-dva-ew1-ain15,Failure Anomalies detected,Sev3,z-aas-plex-plex-dva-ew1-ain15,Application Insights,microsoft.alertsmanagement/smartdetectoralertrules,Enabled
+Failure Anomalies - z-aas-plex-plex-dva-ew1-ain16,Failure Anomalies detected,Sev3,z-aas-plex-plex-dva-ew1-ain16,Application Insights,microsoft.alertsmanagement/smartdetectoralertrules,Enabled
+Failure Anomalies - z-aas-plex-plex-ppa-ew1-ain01,Failure Anomalies detected,Sev3,z-aas-plex-plex-ppa-ew1-ain01,Application Insights,microsoft.alertsmanagement/smartdetectoralertrules,Enabled
+Failure Anomalies - z-aas-plex-plex-ppa-ew1-ain02,Failure Anomalies detected,Sev3,z-aas-plex-plex-ppa-ew1-ain02,Application Insights,microsoft.alertsmanagement/smartdetectoralertrules,Enabled
+Failure Anomalies - z-aas-plex-plex-ppa-ew1-ain04,Failure Anomalies detected,Sev3,z-aas-plex-plex-ppa-ew1-ain04,Application Insights,microsoft.alertsmanagement/smartdetectoralertrules,Enabled
+Failure Anomalies - z-aas-plex-plex-ppa-ew1-ain05,Failure Anomalies detected,Sev3,z-aas-plex-plex-ppa-ew1-ain05,Application Insights,microsoft.alertsmanagement/smartdetectoralertrules,Enabled
+Failure Anomalies - z-aas-plex-plex-ppa-ew1-ain11,Failure Anomalies detected,Sev3,z-aas-plex-plex-ppa-ew1-ain11,Application Insights,microsoft.alertsmanagement/smartdetectoralertrules,Enabled
+Failure Anomalies - z-aas-plex-plex-ppa-ew1-ain12,Failure Anomalies detected,Sev3,z-aas-plex-plex-ppa-ew1-ain12,Application Insights,microsoft.alertsmanagement/smartdetectoralertrules,Enabled
+Failure Anomalies - z-aas-plex-plex-ppa-ew1-ain12,Failure Anomalies detected,Sev3,z-aas-plex-plex-ppa-ew1-ain12,Application Insights,microsoft.alertsmanagement/smartdetectoralertrules,Enabled
+Failure Anomalies - z-aas-plex-plex-ppa-ew1-ain13,Failure Anomalies detected,Sev3,z-aas-plex-plex-ppa-ew1-ain13,Application Insights,microsoft.alertsmanagement/smartdetectoralertrules,Enabled
+Failure Anomalies - z-aas-plex-plex-ppa-ew1-ain14,Failure Anomalies detected,Sev3,z-aas-plex-plex-ppa-ew1-ain14,Application Insights,microsoft.alertsmanagement/smartdetectoralertrules,Enabled
+Failure Anomalies - z-aas-plex-plex-ppa-ew1-ain15,Failure Anomalies detected,Sev3,z-aas-plex-plex-ppa-ew1-ain15,Application Insights,microsoft.alertsmanagement/smartdetectoralertrules,Enabled
+Failure Anomalies - z-aas-plex-plex-ppa-ew1-ain16,Failure Anomalies detected,Sev3,z-aas-plex-plex-ppa-ew1-ain16,Application Insights,microsoft.alertsmanagement/smartdetectoralertrules,Enabled
+Failure Anomalies - z-aas-plex-plex-ppa-ew1-ain17,Failure Anomalies detected,Sev3,z-aas-plex-plex-ppa-ew1-ain17,Application Insights,microsoft.alertsmanagement/smartdetectoralertrules,Enabled
+Failure Anomalies - z-aas-plex-plex-ppa-ew1-ain18,Failure Anomalies detected,Sev3,z-aas-plex-plex-ppa-ew1-ain18,Application Insights,microsoft.alertsmanagement/smartdetectoralertrules,Enabled
+Failure Anomalies - z-aas-plex-plex-ppa-ew1-ain21,Failure Anomalies detected,Sev3,z-aas-plex-plex-ppa-ew1-ain21,Application Insights,microsoft.alertsmanagement/smartdetectoralertrules,Enabled
+Failure Anomalies - z-aas-plex-plex-ppa-ew1-ain22,Failure Anomalies detected,Sev3,z-aas-plex-plex-ppa-ew1-ain22,Application Insights,microsoft.alertsmanagement/smartdetectoralertrules,Enabled
+Failure Anomalies - z-aas-plex-plex-ppa-ew1-ain23,Failure Anomalies detected,Sev3,z-aas-plex-plex-ppa-ew1-ain23,Application Insights,microsoft.alertsmanagement/smartdetectoralertrules,Enabled
+Failure Anomalies - z-aas-plex-plex-ppa-ew1-ain24,Failure Anomalies detected,Sev3,z-aas-plex-plex-ppa-ew1-ain24,Application Insights,microsoft.alertsmanagement/smartdetectoralertrules,Enabled
+Failure Anomalies - z-aas-plex-plex-ppa-ew1-ain25,Failure Anomalies detected,Sev3,z-aas-plex-plex-ppa-ew1-ain25,Application Insights,microsoft.alertsmanagement/smartdetectoralertrules,Enabled
+Failure Anomalies - z-aas-plex-plex-ppa-ew1-ain26,Failure Anomalies detected,Sev3,z-aas-plex-plex-ppa-ew1-ain26,Application Insights,microsoft.alertsmanagement/smartdetectoralertrules,Enabled
+Failure Anomalies - z-aas-plex-plex-pra-en1-ain11,Failure Anomalies detected,Sev3,z-aas-plex-plex-pra-en1-ain11,Application Insights,microsoft.alertsmanagement/smartdetectoralertrules,Enabled
+Failure Anomalies - z-aas-plex-plex-pra-en1-ain12,Failure Anomalies detected,Sev3,z-aas-plex-plex-pra-en1-ain12,Application Insights,microsoft.alertsmanagement/smartdetectoralertrules,Enabled
+Failure Anomalies - z-aas-plex-plex-pra-en1-ain13,Failure Anomalies detected,Sev3,z-aas-plex-plex-pra-en1-ain13,Application Insights,microsoft.alertsmanagement/smartdetectoralertrules,Enabled
+Failure Anomalies - z-aas-plex-plex-pra-en1-ain14,Failure Anomalies detected,Sev3,z-aas-plex-plex-pra-en1-ain14,Application Insights,microsoft.alertsmanagement/smartdetectoralertrules,Enabled
+Failure Anomalies - z-aas-plex-plex-pra-en1-ain15,Failure Anomalies detected,Sev3,z-aas-plex-plex-pra-en1-ain15,Application Insights,microsoft.alertsmanagement/smartdetectoralertrules,Enabled
+Failure Anomalies - z-aas-plex-plex-pra-en1-ain16,Failure Anomalies detected,Sev3,z-aas-plex-plex-pra-en1-ain16,Application Insights,microsoft.alertsmanagement/smartdetectoralertrules,Enabled
+Failure Anomalies - z-aas-plex-plex-pra-en1-ain17,Failure Anomalies detected,Sev3,z-aas-plex-plex-pra-en1-ain17,Application Insights,microsoft.alertsmanagement/smartdetectoralertrules,Enabled
+Failure Anomalies - z-aas-plex-plex-pra-en1-ain18,Failure Anomalies detected,Sev3,z-aas-plex-plex-pra-en1-ain18,Application Insights,microsoft.alertsmanagement/smartdetectoralertrules,Enabled
+Failure Anomalies - z-aas-plex-plex-pra-ew1-ain01,Failure Anomalies detected,Sev3,z-aas-plex-plex-pra-ew1-ain01,Application Insights,microsoft.alertsmanagement/smartdetectoralertrules,Enabled
+Failure Anomalies - z-aas-plex-plex-pra-ew1-ain02,Failure Anomalies detected,Sev3,z-aas-plex-plex-pra-ew1-ain02,Application Insights,microsoft.alertsmanagement/smartdetectoralertrules,Enabled
+Failure Anomalies - z-aas-plex-plex-pra-ew1-ain03,Failure Anomalies detected,Sev3,z-aas-plex-plex-pra-ew1-ain03,Application Insights,microsoft.alertsmanagement/smartdetectoralertrules,Enabled
+Failure Anomalies - z-aas-plex-plex-pra-ew1-ain04,Failure Anomalies detected,Sev3,z-aas-plex-plex-pra-ew1-ain04,Application Insights,microsoft.alertsmanagement/smartdetectoralertrules,Enabled
+Failure Anomalies - z-aas-plex-plex-pra-ew1-ain05,Failure Anomalies detected,Sev3,z-aas-plex-plex-pra-ew1-ain05,Application Insights,microsoft.alertsmanagement/smartdetectoralertrules,Enabled
+Failure Anomalies - z-aas-plex-plex-pra-ew1-ain06,Failure Anomalies detected,Sev3,z-aas-plex-plex-pra-ew1-ain06,Application Insights,microsoft.alertsmanagement/smartdetectoralertrules,Enabled
+Failure Anomalies - z-aas-plex-plex-pra-ew1-ain07,Failure Anomalies detected,Sev3,z-aas-plex-plex-pra-ew1-ain07,Application Insights,microsoft.alertsmanagement/smartdetectoralertrules,Enabled
+Failure Anomalies - z-aas-plex-plex-pra-ew1-ain11,Failure Anomalies detected,Sev3,z-aas-plex-plex-pra-ew1-ain11,Application Insights,microsoft.alertsmanagement/smartdetectoralertrules,Enabled
+Failure Anomalies - z-aas-plex-plex-pra-ew1-ain12,Failure Anomalies detected,Sev3,z-aas-plex-plex-pra-ew1-ain12,Application Insights,microsoft.alertsmanagement/smartdetectoralertrules,Enabled
+Failure Anomalies - z-aas-plex-plex-pra-ew1-ain13,Failure Anomalies detected,Sev3,z-aas-plex-plex-pra-ew1-ain13,Application Insights,microsoft.alertsmanagement/smartdetectoralertrules,Enabled
+Failure Anomalies - z-aas-plex-plex-pra-ew1-ain14,Failure Anomalies detected,Sev3,z-aas-plex-plex-pra-ew1-ain14,Application Insights,microsoft.alertsmanagement/smartdetectoralertrules,Enabled
+Failure Anomalies - z-aas-plex-plex-pra-ew1-ain15,Failure Anomalies detected,Sev3,z-aas-plex-plex-pra-ew1-ain15,Application Insights,microsoft.alertsmanagement/smartdetectoralertrules,Enabled
+Failure Anomalies - z-aas-plex-plex-pra-ew1-ain16,Failure Anomalies detected,Sev3,z-aas-plex-plex-pra-ew1-ain16,Application Insights,microsoft.alertsmanagement/smartdetectoralertrules,Enabled
+Failure Anomalies - z-aas-plex-plex-pra-ew1-ain17,Failure Anomalies detected,Sev3,z-aas-plex-plex-pra-ew1-ain17,Application Insights,microsoft.alertsmanagement/smartdetectoralertrules,Enabled
+Failure Anomalies - z-aas-plex-plex-pra-ew1-ain18,Failure Anomalies detected,Sev3,z-aas-plex-plex-pra-ew1-ain18,Application Insights,microsoft.alertsmanagement/smartdetectoralertrules,Enabled
+Failure Anomalies - z-aas-sxna-sxna-dva-ew1-ain01,Failure Anomalies detected,Sev3,z-aas-sxna-sxna-dva-ew1-ain01,Application Insights,microsoft.alertsmanagement/smartdetectoralertrules,Enabled
+Failure Anomalies - z-aas-sxna-sxna-ppa-ew1-ain01,Failure Anomalies detected,Sev3,z-aas-sxna-sxna-ppa-ew1-ain01,Application Insights,microsoft.alertsmanagement/smartdetectoralertrules,Enabled
+Failure Anomalies - z-aas-sxna-sxna-pra-en1-ain01,Failure Anomalies detected,Sev3,z-aas-sxna-sxna-pra-en1-ain01,Application Insights,microsoft.alertsmanagement/smartdetectoralertrules,Enabled
+Failure Anomalies - z-aas-sxna-sxna-pra-ew1-ain01,Failure Anomalies detected,Sev3,z-aas-sxna-sxna-pra-ew1-ain01,Application Insights,microsoft.alertsmanagement/smartdetectoralertrules,Enabled
+Increase in failed requests - PRA - PLEX APIs,requests/failed > 50,Sev2,z-aas-plex-plex-pra-ew1-ain13,Application Insights,microsoft.insights/metricalerts,Enabled
+Increase in response times - PRA - PLEX APIs,requests/duration > 800,Sev2,z-aas-plex-plex-pra-ew1-ain13,Application Insights,microsoft.insights/metricalerts,Enabled
+Increase in unauthorized access attempts - PRA - over 1 hour,requests/count > dynamic threshold,Sev2,z-aas-plex-plex-pra-ew1-ain13,Application Insights,microsoft.insights/metricalerts,Enabled
+Increased failure count on message endpoints,failedCount > 30 ,Sev0,z-aas-plex-plex-pra-ew1-ain03,Application Insights,microsoft.insights/scheduledqueryrules,Enabled
+New stopped automations - PRA - over last hour,Table rows >= 1 ,Sev2,z-aas-plex-plex-pra-ew1-ain14,Application Insights,microsoft.insights/scheduledqueryrules,Enabled
+New stopped automations - PRD - over last hour,Table rows >= 1 ,Sev2,z-aas-plex-plex-pra-ew1-ain03,Application Insights,microsoft.insights/scheduledqueryrules,Enabled
+PLEX3 DEV - Increase in unathorized request count,requests/count greater or less than dynamic threshold,Sev3,z-aas-plex-plex-dva-ew1-ain01,Application Insights,microsoft.insights/metricalerts,Enabled
+PLEX3 PROD - High CPU usage,performanceCounters/processorCpuPercentage >= 90,Sev0,z-aas-plex-plex-pra-ew1-ain03,Application Insights,microsoft.insights/metricalerts,Enabled
+PLEX3 PROD - Increase in failed requests,requests/failed > 50,Sev2,z-aas-plex-plex-pra-ew1-ain03,Application Insights,microsoft.insights/metricalerts,Enabled
+PLEX3 PROD - Increase in response times,requests/duration > 2000,Sev2,z-aas-plex-plex-pra-ew1-ain03,Application Insights,microsoft.insights/metricalerts,Enabled
+PLEX3 PROD - Increase in unathorized access attempts,requests/count > dynamic threshold,Sev3,z-aas-plex-plex-pra-ew1-ain03,Application Insights,microsoft.insights/metricalerts,Enabled
+PLEX3 PROD - Low available memory,performanceCounters/memoryAvailableBytes < 45000000000,Sev0,z-aas-plex-plex-pra-ew1-ain03,Application Insights,microsoft.insights/metricalerts,Enabled
+plex3-fe-ext-z-aas-plex-plex-pra-ew1-ain11,Failed locations >= 1,Sev1,z-aas-plex-plex-pra-ew1-ain11,Application Insights,microsoft.insights/metricalerts,Enabled
+plex3-proxy-api-z-aas-plex-plex-pra-ew1-ain15,Failed locations >= 1,Sev1,z-aas-plex-plex-pra-ew1-ain15,Application Insights,microsoft.insights/metricalerts,Enabled
+plex3-webapi-ext-z-aas-plex-plex-pra-ew1-ain02,Failed locations >= 1,Sev1,z-aas-plex-plex-pra-ew1-ain02,Application Insights,microsoft.insights/metricalerts,Enabled
+Production request duration alert,requests/duration > 60000,Sev2,z-aas-plex-plex-pra-ew1-ain03,Application Insights,microsoft.insights/metricalerts,Enabled
+Request duration longer than 1 minute - PRA,requests/duration > 60000,Sev3,z-aas-plex-plex-pra-ew1-ain14,Application Insights,microsoft.insights/metricalerts,Enabled
+saxana-fe-cz-z-aas-sxna-sxna-pra-ew1-ain01,Failed locations >= 1,Sev1,z-aas-sxna-sxna-pra-ew1-ain01,Application Insights,microsoft.insights/metricalerts,Enabled
+saxana-fe-pl-z-aas-sxna-sxna-pra-ew1-ain01,Failed locations >= 1,Sev1,z-aas-sxna-sxna-pra-ew1-ain01,Application Insights,microsoft.insights/metricalerts,Enabled
